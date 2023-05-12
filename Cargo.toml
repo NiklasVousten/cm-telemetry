@@ -24,3 +24,15 @@ f1 = ["num", "num_enum", "binread"]
 f1-2020 = ["f1"]
 f1-2022 = ["f1", "bitflags"]
 f1-all = ["f1", "f1-2020", "f1-2022"]
+
+[[example]]
+name = "dirt"
+required-features = ["dirt-rally-2"]
+
+[[example]]
+name = "f1_2020"
+required-features = ["f1-2020"]
+
+[[example]]
+name = "f1_2022"
+required-features = ["f1-2022"]
