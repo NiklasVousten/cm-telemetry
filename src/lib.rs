@@ -1,6 +1,9 @@
 mod net;
 
+#[cfg(feature = "dirt")]
 pub mod dirt;
+
+#[cfg(feature = "f1")]
 pub mod f1;
 
 /// TelemetryPacket is an alias for a vector of bytes
