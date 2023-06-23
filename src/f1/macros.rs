@@ -1,3 +1,5 @@
+//! Useful macros for easier creation of telemtry conversions
+
 /// player_data implements the "player_data()" function
 /// for the given impl_type, return_type and data_field
 macro_rules! player_data {

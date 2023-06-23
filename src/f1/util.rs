@@ -1,3 +1,5 @@
+//! Genric structs used for multiple Telemetry Specifications
+
 use binread::BinRead;
 
 use num::Num;

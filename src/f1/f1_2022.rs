@@ -1,3 +1,8 @@
+//! F1 2022 Telemetry Specification
+//!
+//! Implementation the codemasters UDP telemetry protocol for *"F1 22"*.  
+//! A lot of documentation was extracted from the [codemasters specification](https://answers.ea.com/t5/General-Discussion/F1-22-UDP-Specification/td-p/11551274).
+
 use std::convert::TryFrom;
 use std::error::Error;
 use std::io::Cursor;
@@ -8,39 +13,57 @@ use binread::{BinRead, BinReaderExt};
 use bitflags::bitflags;
 use num_enum::TryFromPrimitive;
 
-/// F1_2022 implements the codemasters UDP telemetry protocol for "F1 22"
-/// See: https://answers.ea.com/t5/General-Discussion/F1-22-UDP-Specification/td-p/11551274
-/// Or: https://answers.ea.com/t5/General-Discussion/F1-22-UDP-Specification/td-p/11551274?attachment-id=657933
-
+/// F1_2022 implements the codemasters UDP telemetry protocol for *"F1 22"*
 pub enum F1_2022 {
+    /// Contains all motion data for player’s car – only sent while player is in control
     Motion(Motion),
+    /// Data about the session – track, time left
     Session(Session),
+    /// Data about all the lap times of cars in the session
     LapData(LapData),
+    /// Various notable events that happen during a session
     Event(Event),
+    /// List of participants in the session, mostly relevant for multiplayer
     Participants(Participants),
+    /// Packet detailing car setups for cars in the race
     CarSetup(CarSetup),
+    /// Telemetry data for all cars
     CarTelemetry(CarTelemetry),
+    /// Status data for all cars
     CarStatus(CarStatus),
+    /// Final classification confirmation at the end of a race
     FinalClassification(FinalClassification),
+    /// Information about players in a multiplayer lobby
     LobbyInfo(LobbyInfo),
+    /// Damage status for all cars
     CarDamage(CarDamage),
+    /// Lap and tyre data for session
     SessionHistory(SessionHistory),
 }
 
 // HEADER
 #[derive(Debug, Default, BinRead)]
 pub struct Header {
-    pub packet_format: u16,     // 2022
-    pub game_major_version: u8, // Game major version - "X.00"
-    pub game_minor_version: u8, // Game minor version - "1.XX"
-    pub packet_version: u8,     // Version of this packet type, all start from 1
-    pub packet_id: u8,          // Identifier for the packet type, see below
-    pub session_uid: u64,       // Unique identifier for the session
-    pub session_time: f32,      // Session timestamp
-    pub frame_identifier: u32,  // Identifier for the frame the data was retrieved on
-    pub player_car_index: u8,   // Index of player's car in the array
-    pub secondary_player_car_index: u8, // Index of secondary player's car in the array (splitscreen)
-                                        // 255 if no second player
+    ///2022
+    pub packet_format: u16,
+    /// Game major version - "X.00"
+    pub game_major_version: u8,
+    /// Game minor version - "1.XX"
+    pub game_minor_version: u8,
+    /// Version of this packet type, all start from 1
+    pub packet_version: u8,
+    /// Identifier for the packet type, see below
+    pub packet_id: u8,
+    /// Unique identifier for the session
+    pub session_uid: u64,
+    /// Session timestamp
+    pub session_time: f32,
+    /// Identifier for the frame the data was retrieved on
+    pub frame_identifier: u32,
+    /// Index of player's car in the array
+    pub player_car_index: u8,
+    /// Index of secondary player's car in the array (splitscreen), 255 if no second player
+    pub secondary_player_car_index: u8,
 }
 
 // MOTION
@@ -179,13 +202,14 @@ pub enum SessionType {
 
 binread_enum!(SessionType, u8);
 
+/// List of all available Tracks with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(i8)]
 pub enum Track {
     #[default]
     Unknown = -1,
     Melbourne,
-    PaulRicard,
+    PaulRicard, //< Test
     Shanghai,
     Sakhir,
     Catalunya,
@@ -626,6 +650,7 @@ pub enum EventDataDetail {
 }
 
 bitflags! {
+    //
     #[derive(Debug)]
     pub struct ButtonFlags: u32 {
         const CROSS_OR_A        = 0x00000001;
@@ -680,6 +705,7 @@ pub struct PenaltyEventDetail {
     pub places_gained: u8,                  // Number of places gained by this
 }
 
+/// List of all available penalties with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum PenaltyType {
@@ -707,6 +733,7 @@ pub enum PenaltyType {
 
 binread_enum!(PenaltyType, u8);
 
+/// List of all available infringements with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum InfringementType {
@@ -830,6 +857,7 @@ fn participant_name_parser<R: binread::io::Read + binread::io::Seek>(
     Ok(String::from(driver_name))
 }
 
+/// List of all available Drivers with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum Driver {
@@ -966,6 +994,7 @@ pub enum Driver {
 
 binread_enum!(Driver, u8);
 
+/// List of all available Teams with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum Team {
@@ -1028,6 +1057,7 @@ pub enum Team {
 
 binread_enum!(Team, u8);
 
+/// List of all available Nationalities with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum Nationality {

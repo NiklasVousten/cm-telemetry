@@ -1,3 +1,6 @@
+#![warn(missing_docs)]
+//! This crates mplements the codemasters (and friends) UDP telemetry protocol and provides an abstraction for interacting with it.
+
 mod net;
 
 pub mod dirt;
@@ -8,6 +11,7 @@ pub type TelemetryPacket = [u8];
 
 /// TelemetryEvent specifies a way to serialize itself from a Packet
 pub trait TelemetryEvent {
+    /// Converts an array of bytes to a TelemetryEvent
     fn from_packet(packet: &TelemetryPacket) -> Result<Self, Box<dyn std::error::Error>>
     where
         Self: Sized;

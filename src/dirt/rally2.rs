@@ -1,10 +1,11 @@
+//! Dirt Rally 2.0 Telemetry Specification
+
 use crate::{TelemetryEvent, TelemetryPacket};
 use std::error::Error;
 
 use byteorder::{ByteOrder, LittleEndian};
 
-/// DirtRally2 implements the codemasters UDP telemetry protocol for "Dirt Rally 2.0"
-/// see: https://docs.google.com/spreadsheets/d/1eA518KHFowYw7tSMa-NxIFYpiWe5JXgVVQ_IMs7BVW0/edit#gid=0 for details on the specification
+/// DirtRally2 implements the codemasters UDP telemetry protocol for [Dirt Rally 2.0](https://docs.google.com/spreadsheets/d/1eA518KHFowYw7tSMa-NxIFYpiWe5JXgVVQ_IMs7BVW0/edit#gid=0)
 pub struct DirtRally2 {
     pub car: Car,
     pub session: Session,

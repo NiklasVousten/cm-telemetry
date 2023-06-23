@@ -1,3 +1,5 @@
+//! Telemetry definitions for the F1 games
+
 pub mod macros;
 pub mod util;
 

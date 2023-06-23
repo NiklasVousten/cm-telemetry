@@ -1,13 +1,10 @@
+//! F1 2020 Telemetry Specification
+
 use std::convert::TryFrom;
 use std::error::Error;
 use std::io::Cursor;
 
-use crate::{
-    TelemetryEvent,
-    TelemetryPacket,
-    f1::util::*,
-    f1::macros::*,
-};
+use crate::{f1::macros::*, f1::util::*, TelemetryEvent, TelemetryPacket};
 
 use binread::{BinRead, BinReaderExt};
 use num_enum::TryFromPrimitive;
