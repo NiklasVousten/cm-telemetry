@@ -205,6 +205,7 @@ binread_enum!(SessionType, u8);
 /// List of all available Tracks with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(i8)]
+#[allow(missing_docs)]
 pub enum Track {
     #[default]
     Unknown = -1,
@@ -708,6 +709,7 @@ pub struct PenaltyEventDetail {
 /// List of all available penalties with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum PenaltyType {
     DriveThrough,
     StopGo,
@@ -736,6 +738,7 @@ binread_enum!(PenaltyType, u8);
 /// List of all available infringements with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum InfringementType {
     BlockingBySlowDriving,
     BlockingByWrongWayDriving,
@@ -860,6 +863,7 @@ fn participant_name_parser<R: binread::io::Read + binread::io::Seek>(
 /// List of all available Drivers with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Driver {
     CarlosSainz,
     DaniilKvyat,
@@ -997,6 +1001,7 @@ binread_enum!(Driver, u8);
 /// List of all available Teams with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Team {
     Mercedes,
     Ferrari,
@@ -1060,6 +1065,7 @@ binread_enum!(Team, u8);
 /// List of all available Nationalities with their corresponding ID
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Nationality {
     #[default]
     Unknown,
