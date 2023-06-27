@@ -41,10 +41,12 @@ pub enum F1_2022 {
     SessionHistory(SessionHistory),
 }
 
-// HEADER
+/// Packet header for a F1 Telemetry Packet
+///
+/// Stores data about the game version and the version of the Telemetry Packet as well as information relevant to all types of telemetry
 #[derive(Debug, Default, BinRead)]
 pub struct Header {
-    ///2022
+    /// Will be 2022
     pub packet_format: u16,
     /// Game major version - "X.00"
     pub game_major_version: u8,
@@ -102,52 +104,76 @@ pub struct CarMotionData {
     pub roll: f32,                           // Roll angle in radians
 }
 
-// SESSION
+/// Telemtry packet with information about the current Session
 #[derive(Debug, BinRead)]
 pub struct Session {
+    /// Telemetry packet header with common information
     pub header: Header,
     pub weather: Weather, // Weather - 0 = clear, 1 = light cloud, 2 = overcast
     // 3 = light rain, 4 = heavy rain, 5 = storm
-    pub track_temperature: i8,     // Track temp. in degrees celsius
-    pub air_temperature: i8,       // Air temp. in degrees celsius
-    pub total_laps: u8,            // Total number of laps in this race
-    pub track_length: u16,         // Track length in metres
+    /// Track temp. in degrees celsius
+    pub track_temperature: i8,
+    /// Air temp. in degrees celsius
+    pub air_temperature: i8,
+    /// Total number of laps in this race
+    pub total_laps: u8,
+    /// Track length in metres
+    pub track_length: u16,
     pub session_type: SessionType, // 0 = unknown, 1 = P1, 2 = P2, 3 = P3, 4 = Short P
     // 5 = Q1, 6 = Q2, 7 = Q3, 8 = Short Q, 9 = OSQ
     // 10 = R, 11 = R2, 12 = R3, 13 = Time Trial
-    pub track: Track,     // -1 for unknown, see appendix
+    pub track: Track, // -1 for unknown, see appendix
+    /// Selected cars of the Session. For example F1 or F2
     pub formula: Formula, // Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2,
     // 3 = F1 Generic, 4 = Beta, 5 = Supercars
     // 6 = Esports, 7 = F2 2021
-    pub session_time_left: u16,      // Time left in session in seconds
-    pub session_duration: u16,       // Session duration in seconds
-    pub pit_speed_limit: u8,         // Pit speed limit in kilometres per hour
-    pub game_paused: u8,             // Whether the game is paused – network game only
-    pub is_spectating: u8,           // Whether the player is spectating
-    pub spectator_car_index: u8,     // Index of the car being spectated
-    pub sli_pro_native_support: u8,  // SLI Pro support, 0 = inactive, 1 = active
-    pub number_of_marshal_zones: u8, // Number of marshal zones to follow
+    /// Time left in session in seconds
+    pub session_time_left: u16,
+    /// Session duration in seconds
+    pub session_duration: u16,
+    /// Pit speed limit in kilometres per hour
+    pub pit_speed_limit: u8,
+    /// Whether the game is paused – network game only
+    pub game_paused: u8,
+    /// Whether the player is spectating
+    pub is_spectating: u8,
+    /// Index of the car being spectated
+    pub spectator_car_index: u8,
+    /// SLI Pro support, 0 = inactive, 1 = active
+    pub sli_pro_native_support: u8,
+    /// Number of marshal zones to follow
+    pub number_of_marshal_zones: u8,
+    /// List of marshal zones – max 21
     #[br(count = 21)]
-    pub marshal_zones: Vec<MarshalZone>, // List of marshal zones – max 21
+    pub marshal_zones: Vec<MarshalZone>,
     pub safety_car_status: SafetyCarStatus, // 0 = no safety car, 1 = full
     // 2 = virtual, 3 = formation lap
     #[br(map = |x: u8| x > 0)]
     pub network_game: bool, // 0 = offline, 1 = online
-    pub number_of_weather_forecast_samples: u8, // Number of weather samples to follow
-    #[br(count = 56)] //Array does not work due to size being > 32
-    pub weather_forecast_samples: Vec<WeatherForecastSample>, // Array of weather forecast samples
-    pub forecast_accuracy: ForecastAccuracy,    // 0 = Perfect, 1 = Approximate
-    pub ai_difficulty: u8,                      // AI Difficulty rating – 0-110
-    pub season_link_identifier: u32,            // Identifier for season - persists across saves
-    pub weekend_link_identifier: u32,           // Identifier for weekend - persists across saves
-    pub session_link_identifier: u32,           // Identifier for session - persists across saves
-    pub pit_stop_window_ideal_lap: u8,          // Ideal lap to pit on for current strategy (player)
-    pub pit_stop_window_latest_lap: u8, // Latest lap to pit on for current strategy (player)
-    pub pit_stop_rejoin_position: u8,   // Predicted position to rejoin at (player)
+    /// Number of weather samples to follow
+    pub number_of_weather_forecast_samples: u8,
+    /// Array of weather forecast samples
+    #[br(count = 56)] // Array does not work due to size being > 32
+    pub weather_forecast_samples: Vec<WeatherForecastSample>,
+    pub forecast_accuracy: ForecastAccuracy, // 0 = Perfect, 1 = Approximate
+    /// AI Difficulty rating – 0-110
+    pub ai_difficulty: u8,
+    /// Identifier for season - persists across saves
+    pub season_link_identifier: u32,
+    /// Identifier for weekend - persists across saves
+    pub weekend_link_identifier: u32,
+    /// Identifier for session - persists across saves
+    pub session_link_identifier: u32,
+    /// Ideal lap to pit on for current strategy (player)
+    pub pit_stop_window_ideal_lap: u8,
+    /// Latest lap to pit on for current strategy (player)
+    pub pit_stop_window_latest_lap: u8,
+    /// Predicted position to rejoin at (player)
+    pub pit_stop_rejoin_position: u8,
     #[br(map = |x: u8| x > 0)]
     pub steering_assist: bool, // 0 = off, 1 = on
-    pub braking_assist: BrakingAssist,  // 0 = off, 1 = low, 2 = medium, 3 = high
-    pub gearbox_assist: GearboxAssist,  // 1 = manual, 2 = manual & suggested gear, 3 = auto
+    pub braking_assist: BrakingAssist, // 0 = off, 1 = low, 2 = medium, 3 = high
+    pub gearbox_assist: GearboxAssist, // 1 = manual, 2 = manual & suggested gear, 3 = auto
     #[br(map = |x: u8| x > 0)]
     pub pit_assist: bool, // 0 = off, 1 = on
     #[br(map = |x: u8| x > 0)]
@@ -158,11 +184,12 @@ pub struct Session {
     pub drs_assist: bool, // 0 = off, 1 = on
     pub dynamic_racing_line: RacingLine, // 0 = off, 1 = corners only, 2 = full
     pub dynamic_racing_line_type: RacingLineType, // 0 = 2D, 1 = 3D
-    pub game_mode: GameMode,            // Game mode id - see appendix
-    pub rule_set: RuleSet,              // Ruleset - see appendix
-    pub time_of_day: u32,               // Local time of day - minutes since midnight
-    pub session_length: SessionLength,  // 0 = None, 2 = Very Short, 3 = Short, 4 = Medium
-                                        // 5 = Medium Long, 6 = Long, 7 = Full
+    pub game_mode: GameMode,           // Game mode id - see appendix
+    pub rule_set: RuleSet,             // Ruleset - see appendix
+    /// Local time of day - minutes since midnight
+    pub time_of_day: u32,
+    pub session_length: SessionLength, // 0 = None, 2 = Very Short, 3 = Short, 4 = Medium
+                                       // 5 = Medium Long, 6 = Long, 7 = Full
 }
 
 #[derive(Debug, Default, TryFromPrimitive)]
@@ -244,17 +271,32 @@ pub enum Track {
 
 binread_enum!(Track, i8);
 
+/// Car type of the Session
 #[derive(Debug, Default, TryFromPrimitive)]
 #[repr(u8)]
 pub enum Formula {
+    /// Modern F1 Cars
     #[default]
     F1Modern,
+    /// Classic or Historic F1 Cars
     F1Classic,
+    /// Formula 2 Cars
     F2,
+    /// Genric F1 Cars or Multiplayer Cars
     F1Generic,
+    /// Beta cars 
+    /// 
+    /// *Not sure what this means*
     Beta,
+    /// Supercars
+    /// 
+    /// *Note: Those were added for F1 22*
     Supercars,
+    /// Esport Cars
+    /// 
+    /// *Note: These are probably not commonly accessible*
     Esports,
+    /// Unknown Car Type, most certainly an error
     Unknown = 255,
 }
 

@@ -5,6 +5,7 @@
 macro_rules! player_data {
     ($impl_type:ident, $return_type:ident, $data_field:ident) => {
         impl $impl_type {
+            /// Returns data from the active player
             pub fn player_data(&self) -> &$return_type {
                 let player_index = self.header.player_car_index as usize;
                 &self.$data_field[player_index]
